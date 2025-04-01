@@ -3,60 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Veb-ilova</title>
+    <title>Hamster Kombatga o'xshash o'yin</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .hamster-container {
+            cursor: pointer;
+        }
+        .hamster {
+            width: 200px;
+            height: 200px;
+            background-image: url('https://i.imgur.com/Tk9j1G3.png'); /* Bu yerga hamster rasmining manzilini qo'ying */
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        .score {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+    </style>
 </head>
 <body>
-    <div id="user-info"></div>
-    <div id="verification-status"></div>
+    <div class="hamster-container" onclick="clickHamster()">
+        <div class="hamster"></div>
+    </div>
+    <div class="score">Coinlar: <span id="coin-count">0</span></div>
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        Telegram.WebApp.ready();
+        let coinCount = 0;
+        const coinCountElement = document.getElementById('coin-count');
 
-        const userInfoDiv = document.getElementById('user-info');
-        const verificationStatusDiv = document.getElementById('verification-status');
-
-        if (Telegram.WebApp.initDataUnsafe) {
-            const userData = Telegram.WebApp.initDataUnsafe.user;
-            if (userData) {
-                userInfoDiv.innerHTML = `
-                    <h3>Foydalanuvchi ma'lumotlari:</h3>
-                    <p>ID: ${userData.id}</p>
-                    <p>Ism: ${userData.first_name || ''} ${userData.last_name || ''}</p>
-                    <p>Foydalanuvchi nomi: ${userData.username || ''}</p>
-                    <p>Til kodi: ${userData.language_code || ''}</p>
-                    ${userData.photo_url ? `<img src="${userData.photo_url}" alt="Profil rasmi" width="50">` : ''}
-                `;
-            } else {
-                userInfoDiv.innerText = 'Foydalanuvchi ma\'lumotlari mavjud emas.';
-            }
-        } else {
-            userInfoDiv.innerText = 'Telegram Web App initData mavjud emas.';
-        }
-
-        const initData = Telegram.WebApp.initData;
-        if (initData) {
-            fetch('/verify_signature', { // aiohttp serveringiz manziliga moslang (masalan, https://yourdomain.com/verify_signature)
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `initData=${encodeURIComponent(initData)}`,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'ok') {
-                    verificationStatusDiv.innerText = 'Imzo tekshirildi: Ma\'lumotlar haqiqiy.';
-                } else {
-                    verificationStatusDiv.innerText = `Imzo tekshirilmadi: ${data.message || 'Xatolik yuz berdi.'}`;
-                }
-            })
-            .catch(error => {
-                console.error('Imzoni tekshirishda xatolik:', error);
-                verificationStatusDiv.innerText = 'Imzoni tekshirishda xatolik yuz berdi.';
-            });
-        } else {
-            verificationStatusDiv.innerText = 'Xavfsiz initData mavjud emas.';
+        function clickHamster() {
+            coinCount++;
+            coinCountElement.innerText = coinCount;
+            // Bu yerga animatsiya yoki boshqa effektlar qo'shishingiz mumkin
         }
     </script>
 </body>
